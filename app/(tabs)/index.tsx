@@ -16,7 +16,7 @@ export default function HomeScreen() {
         />
       }
     >
-      <ThemedView className="flex text-red-700">
+      <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcddome!</ThemedText>
         <HelloWave />
       </ThemedView>
