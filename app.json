@@ -15,14 +15,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.reactnativeboilerplate"
+      "bundleIdentifier": "com.mettor.alwaysOn"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.reactnativeboilerplate"
+      "package": "com.mettor.alwaysOn"
     },
     "web": {
       "favicon": "./assets/favicon.png",

@@ -24,6 +24,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@react-native-firebase/app": "^20.1.0",
+    "@react-native-firebase/firestore": "^20.1.0",
     "expo": "^49.0.5",
     "expo-constants": "~14.4.2",
     "expo-linking": "~5.0.2",
