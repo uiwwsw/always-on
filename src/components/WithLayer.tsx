@@ -19,7 +19,6 @@ export default function WithLayer<P>(
 ) {
   const WrappedComponentRef = (props: WithLayerProps & P) => {
     const debouncedIsOpen = useDebounce(props.isOpen, 500); // 100ms debounce delay
-    console.log(debouncedIsOpen);
     return (
       <motion.div
         className="fixed inset-0 !h-auto"
