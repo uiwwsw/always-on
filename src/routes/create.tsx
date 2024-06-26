@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import SelectWithTheme from "components/Select";
 import TextareaWithTheme from "components/Textarea";
-import { createPlace } from "libs/place/usecase/createPlace";
+import { useCreatePlace } from "libs/place/usecase/createPlace";
 import { toast } from "react-toastify";
 
 import useGlobalContext from "components/GlobalContext";
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/create")({
 });
 function Index() {
   const notify = () => toast("작성이 완료됐어요");
+  const { mutateAsync } = useCreatePlace();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -32,7 +33,7 @@ function Index() {
   const [isOpen, setIsOpen] = useState(false);
   const onSubmit = async (values: Place) => {
     setIsLoading(true);
-    await createPlace(values);
+    await mutateAsync(values);
     navigate({ to: "/" });
     notify();
     setIsLoading(false);
@@ -50,7 +51,7 @@ function Index() {
   register("address", { required: "필수입력입니다." });
   return (
     <div className="p-2">
-      <h1>얼웨이즈 추가</h1>
+      <h1 className="text-xl">얼웨이즈 추가</h1>
       <PostcodeWithLayer isOpen={isOpen} onClose={handleClose} />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <LabelWithTheme

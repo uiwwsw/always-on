@@ -6,6 +6,10 @@ export interface Place {
   type: PlaceType;
   description?: string;
   url?: string;
+  on: boolean;
+}
+export interface PlaceWithId extends Place {
+  id: string;
 }
 // export class KakaoPlace implements Place {
 //   name: string;

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import Card from "components/Card";
 import LoadingWithLayer from "components/Loading";
 import { useGetPlaces } from "libs/place/usecase/getPlaces";
 
@@ -13,8 +14,9 @@ function Index() {
   return (
     <div className="p-2">
       <LoadingWithLayer isOpen={isLoading} />
-      <h3>Welcome Home!</h3>
-      {data?.map((x) => <div>{x.name}</div>)}
+      <h1 className="text-xl">영업중인 곳</h1>
+
+      {data?.map((x) => <Card key={x.id} data={x} />)}
     </div>
   );
 }

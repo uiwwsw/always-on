@@ -1,78 +1,50 @@
-import { useEffect } from "react";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   collection,
-  onSnapshot,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  startAfter,
   QueryDocumentSnapshot,
   DocumentData,
-  FirestoreDataConverter,
 } from "firebase/firestore";
 import { db } from "utils/firebase";
-import { Place } from "../domain";
+import { Place, PlaceWithId } from "../domain";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-// Place 타입에 id 필드를 추가한 타입 정의
-interface PlaceWithId extends Place {
-  id: string;
-}
+const PAGE_SIZE = 10; // 한 페이지에 가져올 데이터 수
 
-// Firestore 데이터 변환기
-const placeConverter: FirestoreDataConverter<Place> = {
-  toFirestore(place: Place): DocumentData {
-    return { ...place };
-  },
-  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): Place {
-    const data = snapshot.data();
-    return {
-      name: data.name,
-      address: data.address,
-      type: data.type,
-      description: data.description,
-      url: data.url,
-    } as Place;
-  },
-};
+export const getPlaces = async (
+  pageParam?: QueryDocumentSnapshot<DocumentData>
+): Promise<PlaceWithId[]> => {
+  try {
+    const colRef = collection(db, "place");
+    const q = pageParam
+      ? query(colRef, orderBy("name"), startAfter(pageParam), limit(PAGE_SIZE))
+      : query(colRef, orderBy("name"), limit(PAGE_SIZE));
 
-const fetchPlaces = (): Promise<PlaceWithId[]> => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onSnapshot(
-      collection(db, "place").withConverter(placeConverter),
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as PlaceWithId[];
-        resolve(data);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
+    const querySnapshot = await getDocs(q);
+    const places = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Place),
+    }));
 
-    return () => unsubscribe();
-  });
+    return places;
+  } catch (e) {
+    throw new Error("Error getting documents: " + e);
+  }
 };
 
 export const useGetPlaces = () => {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "place").withConverter(placeConverter),
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        queryClient.setQueryData<PlaceWithId[]>(["place"], data);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [queryClient]);
-
-  return useQuery<PlaceWithId[]>({
-    queryKey: ["place"],
-    queryFn: fetchPlaces,
+  return useInfiniteQuery<PlaceWithId[]>({
+    queryKey: ["places"],
+    queryFn: ({ pageParam }) =>
+      getPlaces(pageParam as QueryDocumentSnapshot<DocumentData>),
+    getNextPageParam: (lastPage) => {
+      return lastPage.length === PAGE_SIZE
+        ? lastPage[lastPage.length - 1]
+        : null;
+    },
+    initialPageParam: null,
   });
 };
