@@ -1,7 +1,7 @@
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
-import WithLayer, { WithLayerProps } from "./WithLayer";
+import WithSheet, { WithSheetProps } from "./WithSheet";
 
-export function Postcode({ onClose }: WithLayerProps) {
+export function Postcode({ onClose }: WithSheetProps) {
   const handleComplete = (data: Address) => {
     let fullAddress = data.address;
     let extraAddress = "";
@@ -30,5 +30,5 @@ export function Postcode({ onClose }: WithLayerProps) {
     />
   );
 }
-const PostcodeWithLayer = WithLayer(Postcode, "주소검색창");
-export default PostcodeWithLayer;
+const PostcodeWithSheet = WithSheet(Postcode, "주소검색창");
+export default PostcodeWithSheet;

@@ -1,49 +1,37 @@
 import { motion } from "framer-motion";
-import { ComponentType, useEffect, useState } from "react";
-
-export interface WithBlockingProps {
+import { ComponentType } from "react";
+export interface WithSheetProps {
   isOpen?: boolean;
   onClose?: (value?: unknown) => void;
 }
-
 const variants = {
   open: {
     display: "block",
     opacity: [0, 1],
+    translateY: ["100%", "0%"],
     transition: { duration: 0.2 },
   },
   closed: {
     display: "none",
+    // pointerEvents: "none",
     opacity: [1, 0],
+    translateY: ["0%", "100%"],
     transition: { duration: 0.3 },
   },
 };
-
-export default function WithBlocking<P>(
-  WrappedComponent: ComponentType<WithBlockingProps & P>,
-  delay: number = 1000
+export default function WithSheet<P>(
+  WrappedComponent: ComponentType<WithSheetProps & P>,
+  title?: string
 ) {
-  const WrappedComponentRef = (props: WithBlockingProps & P) => {
-    const [isVisible, setIsVisible] = useState(false);
-
-    useEffect(() => {
-      if (props.isOpen) {
-        setIsVisible(true);
-      } else {
-        const timeoutId = setTimeout(() => {
-          setIsVisible(false);
-        }, delay);
-        return () => clearTimeout(timeoutId);
-      }
-    }, [props.isOpen]);
-
+  const WrappedComponentRef = (props: WithSheetProps & P) => {
     return (
       <motion.div
         className="z-10 fixed inset-0 hidden !h-auto"
-        animate={isVisible ? "open" : "closed"}
+        animate={props.isOpen ? "open" : "closed"}
         variants={variants}
       >
         <div className="flex items-center bg-white">
+          {title && <h2 className="p-3 text-lg">{title}</h2>}
           <button className="ml-auto p-4" onClick={() => props.onClose?.()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -65,10 +53,8 @@ export default function WithBlocking<P>(
       </motion.div>
     );
   };
-
   const componentName =
     WrappedComponent.displayName ?? WrappedComponent.name ?? "Component";
-  WrappedComponentRef.displayName = `WithBlocking(${componentName})`;
-
+  WrappedComponentRef.displayName = `WithSheet(${componentName})`;
   return WrappedComponentRef;
 }

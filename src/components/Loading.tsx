@@ -1,5 +1,6 @@
 import Spinner from "./Spinner";
-import WithBlocking from "./WithBlocking";
+import WithLayer from "./WithLayer";
+import WithSmooth from "./WithSmooth";
 
 export function Loading() {
   return (
@@ -8,5 +9,5 @@ export function Loading() {
     </div>
   );
 }
-const LoadingWithLayer = WithBlocking(Loading);
+const LoadingWithLayer = WithSmooth(WithLayer(Loading));
 export default LoadingWithLayer;

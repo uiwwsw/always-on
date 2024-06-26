@@ -13,10 +13,12 @@ import { Place, PlaceWithId } from "../domain";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10; // 한 페이지에 가져올 데이터 수
-
 export const getPlaces = async (
-  pageParam?: QueryDocumentSnapshot<DocumentData>
-): Promise<PlaceWithId[]> => {
+  pageParam: QueryDocumentSnapshot<DocumentData> | null
+): Promise<{
+  places: PlaceWithId[];
+  lastVisible: QueryDocumentSnapshot<DocumentData> | null;
+}> => {
   try {
     const colRef = collection(db, "place");
     const q = pageParam
@@ -29,21 +31,32 @@ export const getPlaces = async (
       ...(doc.data() as Place),
     }));
 
-    return places;
+    const lastVisible =
+      querySnapshot.docs[querySnapshot.docs.length - 1] || null;
+
+    return { places, lastVisible };
   } catch (e) {
     throw new Error("Error getting documents: " + e);
   }
 };
 
 export const useGetPlaces = () => {
-  return useInfiniteQuery<PlaceWithId[]>({
+  return useInfiniteQuery<
+    {
+      places: PlaceWithId[];
+      lastVisible: QueryDocumentSnapshot<DocumentData> | null;
+    },
+    Error
+  >({
     queryKey: ["places"],
-    queryFn: ({ pageParam }) =>
-      getPlaces(pageParam as QueryDocumentSnapshot<DocumentData>),
+    queryFn: async ({ pageParam = null }) => {
+      const { places, lastVisible } = await getPlaces(
+        pageParam as QueryDocumentSnapshot<DocumentData>
+      );
+      return { places, lastVisible };
+    },
     getNextPageParam: (lastPage) => {
-      return lastPage.length === PAGE_SIZE
-        ? lastPage[lastPage.length - 1]
-        : null;
+      return lastPage.lastVisible;
     },
     initialPageParam: null,
   });
