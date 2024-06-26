@@ -1,7 +1,7 @@
 import DaumPostcodeEmbed, { Address } from "react-daum-postcode";
-import WithLayer from "./WithLayer";
+import WithLayer, { WithLayerProps } from "./WithLayer";
 
-function Postcode() {
+export function Postcode({ onClose }: WithLayerProps) {
   const handleComplete = (data: Address) => {
     let fullAddress = data.address;
     let extraAddress = "";
@@ -17,11 +17,18 @@ function Postcode() {
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
 
-    console.log(fullAddress);
+    onClose?.(fullAddress);
   };
 
   return (
-    <DaumPostcodeEmbed onComplete={handleComplete} style={{ height: "100%" }} />
+    <DaumPostcodeEmbed
+      onComplete={handleComplete}
+      focusInput
+      animation
+      autoClose={false}
+      style={{ height: "100%" }}
+    />
   );
 }
-export default WithLayer(Postcode);
+const PostcodeWithLayer = WithLayer(Postcode, "주소검색창");
+export default PostcodeWithLayer;

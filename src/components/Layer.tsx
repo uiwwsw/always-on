@@ -14,7 +14,7 @@ export default function Layer({
         className="fixed inset-0 !h-auto"
         animate={{
           opacity: [0, 100],
-          scale: [0, 1],
+          scaleY: [100, 0],
         }}
       >
         {children}
