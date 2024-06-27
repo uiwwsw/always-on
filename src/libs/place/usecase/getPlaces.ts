@@ -12,7 +12,7 @@ import { db } from "utils/firebase";
 import { Place, PlaceWithId } from "../domain";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const PAGE_SIZE = 10; // 한 페이지에 가져올 데이터 수
+const PAGE_SIZE = 30; // 한 페이지에 가져올 데이터 수
 export const getPlaces = async (
   pageParam: QueryDocumentSnapshot<DocumentData> | null
 ): Promise<{
