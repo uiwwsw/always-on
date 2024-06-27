@@ -13,6 +13,9 @@ import { useCreatePlace } from "libs/place/usecase/createPlace";
 import { toast } from "react-toastify";
 
 import useGlobalContext from "components/GlobalContext";
+import { Address } from "react-daum-postcode";
+import { getFullAddress } from "libs/address/domain";
+import { useCreateAddress } from "libs/address/usecase/createAddress";
 
 export const Route = createFileRoute("/create")({
   component: Index,
@@ -20,6 +23,7 @@ export const Route = createFileRoute("/create")({
 function Index() {
   const notify = () => toast("작성이 완료됐어요");
   const { mutateAsync } = useCreatePlace();
+  const { mutateAsync: addressMutateAsync } = useCreateAddress();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -27,25 +31,30 @@ function Index() {
     setValue,
     watch,
     trigger,
+    resetField,
     formState: { errors },
   } = useForm<Place>();
   const { setIsLoading } = useGlobalContext();
   const [isOpen, setIsOpen] = useState(false);
   const onSubmit = async (values: Place) => {
     setIsLoading(true);
-    await mutateAsync(values);
+    await Promise.all([
+      addressMutateAsync(values.address),
+      mutateAsync(values),
+    ]);
     navigate({ to: "/" });
     notify();
     setIsLoading(false);
   };
   const handleClose = (address: unknown) => {
-    address && setValue("address", `${address}`);
+    address && setValue("address", address as Address);
     setIsOpen(false);
     trigger("address");
   };
   const address = watch("address");
+  const fullAddress = getFullAddress(address);
   const handleReset = () => {
-    setValue("address", "");
+    resetField("address");
     trigger("address");
   };
   register("address", { required: "필수입력입니다." });
@@ -60,22 +69,22 @@ function Index() {
               <motion.div
                 className="opacity-0"
                 animate={{
-                  opacity: address ? 1 : 0,
-                  translateX: address ? 0 : "100%",
+                  opacity: fullAddress ? 1 : 0,
+                  translateX: fullAddress ? 0 : "100%",
                 }}
               >
                 <InputWithTheme
                   onClear={handleReset}
                   disabled
                   readOnly
-                  value={address}
+                  value={fullAddress}
                 />
               </motion.div>
               <motion.div
                 className="top-0 left-0 absolute w-full"
                 animate={{
-                  opacity: address ? 0 : 1,
-                  translateX: address ? "-100%" : 0,
+                  opacity: fullAddress ? 0 : 1,
+                  translateX: fullAddress ? "-100%" : 0,
                 }}
               >
                 <ButtonWithTheme type="button" onClick={() => setIsOpen(true)}>

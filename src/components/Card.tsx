@@ -1,3 +1,4 @@
+import { getFullAddress } from "libs/address/domain";
 import { Place } from "libs/place/domain";
 export default function Card({ data }: { data: Place }) {
   return (
@@ -38,7 +39,7 @@ export default function Card({ data }: { data: Place }) {
         </span>
       </div>
       <div className="flex gap-1">
-        <span>{data.address}</span>
+        <span>{getFullAddress(data.address)}</span>
       </div>
     </div>
   );

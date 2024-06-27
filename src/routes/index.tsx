@@ -23,7 +23,7 @@ function Index() {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  });
+  }, 300);
 
   if (error) return <div>Error: {error.message}</div>;
 
