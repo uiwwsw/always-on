@@ -17,7 +17,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {
             "px-3 p-2 text-sm": size === "sm",
             "px-3.5 p-2.5 text-base": size === "md",
-            "px-4 p-3 text-xl": size === "xl",
+            "px-4 p-3 text-xl": size === "lg",
             "focus-within:ring": theme === "primary",
           },
           className
