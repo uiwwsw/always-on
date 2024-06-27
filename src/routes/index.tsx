@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Card from "components/Card";
-import LoadingWithSmooth from "components/FloatLoading";
+import FilterWithOver from "components/Filter";
+import { LoadingWithBounce } from "components/Loading";
 import useInfiniteScroll from "components/useInfiniteScroll";
 import { useGetPlaces } from "libs/place/usecase/getPlaces";
 import { useMemo } from "react";
@@ -28,10 +29,15 @@ function Index() {
 
   return (
     <div className="p-2">
-      <h1 className="text-xl">영업중인 곳</h1>
+      <div className="flex justify-between">
+        <h1 className="text-xl">영업중인 곳</h1>
+        <FilterWithOver />
+      </div>
 
       {items?.map((x) => <Card key={x.id} data={x} />)}
-      <LoadingWithSmooth isOpen={isFetchingNextPage} />
+      <div className="right-0 bottom-20 left-0 fixed [&>*>*]:!bg-transparent">
+        <LoadingWithBounce isOpen={isFetchingNextPage} />
+      </div>
     </div>
   );
 }

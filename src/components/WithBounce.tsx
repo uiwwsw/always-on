@@ -10,13 +10,12 @@ const variants = {
     display: "block",
     opacity: [0, 1],
     scale: [0, 1],
-    transition: { duration: 0.2 },
+    transition: { duration: 0.5 },
   },
   closed: {
-    display: "none",
     opacity: [1, 0],
     scale: [1, 0],
-    transition: { duration: 0.3 },
+    transition: { duration: 0.6 },
   },
 };
 export default function WithBounce<P>(
@@ -25,6 +24,7 @@ export default function WithBounce<P>(
   const WrappedComponentRef = (props: WithBounceProps & P) => {
     return (
       <motion.div
+        className="hidden"
         animate={props.isOpen ? "open" : "closed"}
         variants={variants}
       >

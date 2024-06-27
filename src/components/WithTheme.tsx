@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { ComponentType } from "react";
 
 export interface WithThemeProps {
-  size?: "sm" | "md" | "xl";
+  size?: "sm" | "md" | "lg";
   theme?: "primary";
 }
 

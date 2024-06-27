@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { ComponentType, useEffect, useState } from "react";
+import { AnimationDefinition, motion } from "framer-motion";
+import { ComponentType, useRef } from "react";
+import { createPortal } from "react-dom";
 
 export interface WithLayerProps {
   isOpen?: boolean;
@@ -13,37 +14,28 @@ const variants = {
     transition: { duration: 0.2 },
   },
   closed: {
-    display: "none",
     opacity: [1, 0],
     transition: { duration: 0.3 },
   },
 };
 
 export default function WithLayer<P>(
-  WrappedComponent: ComponentType<WithLayerProps & P>,
-  delay: number = 1000
+  WrappedComponent: ComponentType<WithLayerProps & P>
 ) {
   const WrappedComponentRef = (props: WithLayerProps & P) => {
-    const [isVisible, setIsVisible] = useState(false);
-
-    useEffect(() => {
-      if (props.isOpen) {
-        setIsVisible(true);
-      } else {
-        const timeoutId = setTimeout(() => {
-          setIsVisible(false);
-        }, delay);
-        return () => clearTimeout(timeoutId);
-      }
-    }, [props.isOpen]);
-
-    return (
+    const wrapRef = useRef<HTMLDivElement>(null);
+    const handleAnimated = (animation: AnimationDefinition) => {
+      if (animation === "open") wrapRef.current?.focus();
+    };
+    return createPortal(
       <motion.div
+        ref={wrapRef}
         className="z-10 fixed inset-0 hidden !h-auto"
-        animate={isVisible ? "open" : "closed"}
+        animate={props.isOpen ? "open" : "closed"}
         variants={variants}
+        onAnimationComplete={handleAnimated}
       >
-        <div className="flex items-center bg-white">
+        <div tabIndex={0} className="flex items-center bg-white">
           <button className="ml-auto p-4" onClick={() => props.onClose?.()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +54,8 @@ export default function WithLayer<P>(
           </button>
         </div>
         <WrappedComponent {...props} />
-      </motion.div>
+      </motion.div>,
+      document.body
     );
   };
 

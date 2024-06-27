@@ -17,7 +17,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {
             "px-3 p-2 text-sm": size === "sm",
             "px-3.5 p-2.5 text-base": size === "md",
-            "px-4 p-3 text-xl": size === "xl",
+            "px-4 p-3 text-lg": size === "lg",
             "focus-within:ring": theme === "primary",
           },
           className

@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { ComponentType } from "react";
+import { AnimationDefinition, motion } from "framer-motion";
+import { ComponentType, useRef } from "react";
+import { createPortal } from "react-dom";
 export interface WithSheetProps {
   isOpen?: boolean;
   onClose?: (value?: unknown) => void;
@@ -12,7 +13,6 @@ const variants = {
     transition: { duration: 0.2 },
   },
   closed: {
-    display: "none",
     // pointerEvents: "none",
     opacity: [1, 0],
     translateY: ["0%", "100%"],
@@ -24,8 +24,14 @@ export default function WithSheet<P>(
   title?: string
 ) {
   const WrappedComponentRef = (props: WithSheetProps & P) => {
-    return (
+    const wrapRef = useRef<HTMLDivElement>(null);
+    const handleAnimated = (animation: AnimationDefinition) => {
+      if (animation === "open") wrapRef.current?.focus();
+    };
+    return createPortal(
       <motion.div
+        onAnimationComplete={handleAnimated}
+        ref={wrapRef}
         className="z-10 fixed inset-0 hidden !h-auto"
         animate={props.isOpen ? "open" : "closed"}
         variants={variants}
@@ -50,7 +56,8 @@ export default function WithSheet<P>(
           </button>
         </div>
         <WrappedComponent {...props} />
-      </motion.div>
+      </motion.div>,
+      document.body
     );
   };
   const componentName =
