@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import ButtonWithTheme from "components/Button";
 import Card from "components/Card";
-import FilterWithOver from "components/Filter";
+import FilterWithSheet from "components/Filter";
 import { LoadingWithBounce } from "components/Loading";
 import useInfiniteScroll from "components/useInfiniteScroll";
 import { useGetPlaces } from "libs/place/usecase/getPlaces";
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [openFilter, setOpenFilter] = useState(false);
   const [filter, setFilter] = useState<{
     city?: string;
     district?: string;
@@ -34,14 +36,33 @@ function Index() {
     <div className="p-2">
       <div className="flex justify-between">
         <h1 className="text-xl">영업중인 곳</h1>
-        <FilterWithOver
-          onSubmit={({ city, district, neighborhood }) =>
-            setFilter({
-              city,
-              district,
-              neighborhood,
-            })
-          }
+        <ButtonWithTheme onClick={() => setOpenFilter(true)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            />
+          </svg>
+        </ButtonWithTheme>
+        <FilterWithSheet
+          isOpen={openFilter}
+          onClose={(values) => {
+            values &&
+              setFilter({
+                city: values.city,
+                district: values.district,
+                neighborhood: values.neighborhood,
+              });
+            setOpenFilter(false);
+          }}
         />
       </div>
       {items?.map((x) => <Card key={x.id} data={x} />)}

@@ -1,9 +1,9 @@
 import { AnimationDefinition, motion } from "framer-motion";
 import { ComponentType, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-export interface WithSheetProps {
+export interface WithSheetProps<T> {
   isOpen?: boolean;
-  onClose?: (value?: unknown) => void;
+  onClose?: (value?: T) => void;
 }
 const variants = {
   open: {
@@ -19,11 +19,11 @@ const variants = {
     transition: { duration: 0.3 },
   },
 };
-export default function WithSheet<P>(
-  WrappedComponent: ComponentType<WithSheetProps & P>,
+export default function WithSheet<P, T>(
+  WrappedComponent: ComponentType<WithSheetProps<T> & P>,
   title?: string
 ) {
-  const WrappedComponentRef = (props: WithSheetProps & P) => {
+  const WrappedComponentRef = (props: WithSheetProps<T> & P) => {
     const wrapRef = useRef<HTMLDivElement>(null);
     const handleAnimated = useCallback(
       (animation: AnimationDefinition) =>

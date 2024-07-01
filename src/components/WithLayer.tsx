@@ -2,9 +2,9 @@ import { AnimationDefinition, motion } from "framer-motion";
 import { ComponentType, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 
-export interface WithLayerProps {
+export interface WithLayerProps<T> {
   isOpen?: boolean;
-  onClose?: (value?: unknown) => void;
+  onClose?: (value?: T) => void;
 }
 
 const variants = {
@@ -19,10 +19,10 @@ const variants = {
   },
 };
 
-export default function WithLayer<P>(
-  WrappedComponent: ComponentType<WithLayerProps & P>
+export default function WithLayer<P, T>(
+  WrappedComponent: ComponentType<WithLayerProps<T> & P>
 ) {
-  const WrappedComponentRef = (props: WithLayerProps & P) => {
+  const WrappedComponentRef = (props: WithLayerProps<T> & P) => {
     const wrapRef = useRef<HTMLDivElement>(null);
     const handleAnimated = useCallback(
       (animation: AnimationDefinition) =>

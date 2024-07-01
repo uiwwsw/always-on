@@ -1,13 +1,12 @@
 import { useGetCities } from "libs/address/usecase/getCities";
-import WithOver, { WithOverProps } from "./WithOver";
+import WithSheet, { WithSheetProps } from "./WithSheet";
 import ButtonWithTheme from "./Button";
 import { useGetDistricts } from "libs/address/usecase/getDistricts";
 import { useGetNeighborhoods } from "libs/address/usecase/getNeighborhoods";
 import { useCallback, useState } from "react";
 export function Filter({
   onClose,
-  onSubmit,
-}: WithOverProps<{
+}: WithSheetProps<{
   city?: string;
   district?: string;
   neighborhood: string[];
@@ -125,10 +124,7 @@ export function Filter({
             ))}
       </div>
       <ButtonWithTheme
-        onClick={() => {
-          onSubmit?.({ city, district, neighborhood });
-          onClose?.();
-        }}
+        onClick={() => onClose?.({ city, district, neighborhood })}
         className="mt-2 w-full"
       >
         적용
@@ -137,21 +133,5 @@ export function Filter({
   );
 }
 
-const FilterWithOver = WithOver(
-  Filter,
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="size-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
-    />
-  </svg>
-);
-export default FilterWithOver;
+const FilterWithSheet = WithSheet(Filter);
+export default FilterWithSheet;

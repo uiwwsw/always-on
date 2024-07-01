@@ -4,8 +4,7 @@ import { createPortal } from "react-dom";
 import ButtonWithTheme from "./Button";
 
 export interface WithOverProps<J> {
-  onSubmit?: (value: J) => void;
-  onClose?: () => void;
+  onClose?: (value?: J) => void;
 }
 
 const variants = {
@@ -93,7 +92,13 @@ export default function WithOver<P, J>(
             animate={isOpen ? "open" : "closed"}
             variants={variants}
           >
-            <WrappedComponent {...props} onClose={handleClose} />
+            <WrappedComponent
+              {...props}
+              onClose={() => {
+                handleClose();
+                props.onClose?.();
+              }}
+            />
           </motion.div>,
           document.body
         )}
