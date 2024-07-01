@@ -7,7 +7,7 @@ export interface WithSheetProps<T> {
 }
 const variants = {
   open: {
-    display: "block",
+    display: "flex",
     opacity: [0, 1],
     translateY: ["100%", "0%"],
     transition: { duration: 0.2 },
@@ -34,7 +34,7 @@ export default function WithSheet<P, T>(
       <motion.div
         onAnimationComplete={handleAnimated}
         ref={wrapRef}
-        className="z-10 fixed inset-0 hidden !h-auto"
+        className="z-10 fixed inset-0 flex-col hidden !h-auto"
         animate={props.isOpen ? "open" : "closed"}
         variants={variants}
       >

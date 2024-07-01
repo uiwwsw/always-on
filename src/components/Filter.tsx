@@ -46,7 +46,7 @@ export function Filter({
     []
   );
   return (
-    <div className="bg-white rounded-md">
+    <div className="flex flex-col bg-white p-3 rounded-md h-full">
       <div className="flex gap-1 w-72">
         {city && (
           <ButtonWithTheme
@@ -125,7 +125,7 @@ export function Filter({
       </div>
       <ButtonWithTheme
         onClick={() => onClose?.({ city, district, neighborhood })}
-        className="mt-2 w-full"
+        className="mt-auto w-full"
       >
         적용
       </ButtonWithTheme>

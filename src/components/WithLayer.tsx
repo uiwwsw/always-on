@@ -9,7 +9,7 @@ export interface WithLayerProps<T> {
 
 const variants = {
   open: {
-    display: "block",
+    display: "flex",
     opacity: [0, 1],
     transition: { duration: 0.2 },
   },
@@ -32,7 +32,7 @@ export default function WithLayer<P, T>(
     return createPortal(
       <motion.div
         ref={wrapRef}
-        className="z-10 fixed inset-0 hidden !h-auto"
+        className="z-10 fixed inset-0 flex-col hidden !h-auto"
         animate={props.isOpen ? "open" : "closed"}
         variants={variants}
         onAnimationComplete={handleAnimated}
