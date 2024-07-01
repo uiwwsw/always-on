@@ -3,7 +3,7 @@ import { ComponentType } from "react";
 
 export interface WithThemeProps {
   size?: "sm" | "md" | "lg";
-  theme?: "primary";
+  theme?: "primary" | "secondary";
 }
 
 export default function WithTheme<P>(

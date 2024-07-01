@@ -9,6 +9,9 @@ export interface Place {
   description?: string;
   url?: string;
   on: boolean;
+  // city: Address["sido"];
+  // district: Address["sigungu"];
+  // neighborhood: Address["bname"];
 }
 export interface PlaceWithId extends Place {
   id: string;

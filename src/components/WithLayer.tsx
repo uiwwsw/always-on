@@ -1,5 +1,5 @@
 import { AnimationDefinition, motion } from "framer-motion";
-import { ComponentType, useRef } from "react";
+import { ComponentType, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 
 export interface WithLayerProps {
@@ -24,9 +24,11 @@ export default function WithLayer<P>(
 ) {
   const WrappedComponentRef = (props: WithLayerProps & P) => {
     const wrapRef = useRef<HTMLDivElement>(null);
-    const handleAnimated = (animation: AnimationDefinition) => {
-      if (animation === "open") wrapRef.current?.focus();
-    };
+    const handleAnimated = useCallback(
+      (animation: AnimationDefinition) =>
+        animation === "open" && wrapRef.current?.focus(),
+      []
+    );
     return createPortal(
       <motion.div
         ref={wrapRef}

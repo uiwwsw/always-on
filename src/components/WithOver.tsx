@@ -1,9 +1,10 @@
 import { AnimationDefinition, motion } from "framer-motion";
-import { ComponentType, useState, useRef, ReactNode } from "react";
+import { ComponentType, useState, useRef, ReactNode, useCallback } from "react";
 import { createPortal } from "react-dom";
 import ButtonWithTheme from "./Button";
 
-export interface WithOverProps {
+export interface WithOverProps<J> {
+  onSubmit?: (value: J) => void;
   onClose?: () => void;
 }
 
@@ -19,32 +20,38 @@ const variants = {
   },
 };
 
-export default function WithOver<P>(
-  WrappedComponent: ComponentType<WithOverProps & P>,
+export default function WithOver<P, J>(
+  WrappedComponent: ComponentType<WithOverProps<J> & P>,
   btn: ReactNode
 ) {
-  const WrappedComponentRef = (props: WithOverProps & P) => {
+  const WrappedComponentRef = (props: WithOverProps<J> & P) => {
     const [buttonPosition, setButtonPosition] = useState<DOMRect | null>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const sto = useRef<number>(0);
     const wrapRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
-    const handleButtonClick = () => {
+    const handleButtonClick = useCallback(() => {
       if (buttonRef.current && wrapRef.current) {
         setButtonPosition(buttonRef.current.getBoundingClientRect());
         setIsOpen(true);
       }
-    };
+    }, []);
 
-    const handleClose = () => {
-      sto.current = setTimeout(() => setIsOpen(false), 0);
-    };
-    const handleCancelClose = () => clearTimeout(sto.current);
-    const handleAnimated = (animation: AnimationDefinition) => {
-      if (animation === "open") wrapRef.current?.focus();
-    };
+    const handleClose = useCallback(
+      () => (sto.current = setTimeout(() => setIsOpen(false), 0)),
+      []
+    );
+    const handleCancelClose = useCallback(() => {
+      clearTimeout(sto.current);
+      wrapRef.current?.focus();
+    }, []);
+    const handleAnimated = useCallback(
+      (animation: AnimationDefinition) =>
+        animation === "open" && wrapRef.current?.focus(),
+      []
+    );
 
-    const computePositionStyles = () => {
+    const computePositionStyles = useCallback(() => {
       if (!buttonPosition) return undefined;
       const { top, left, width, height } = buttonPosition;
       const horizontalCenter = left + width / 2;
@@ -60,13 +67,14 @@ export default function WithOver<P>(
         left: isRight ? "auto" : `${left}px`,
         right: isRight ? `${windowWidth - (left + width)}px` : "auto",
       };
-    };
+    }, [buttonPosition]);
 
     return (
       <>
-        <span className="[&>*]:min-w-0">
+        <span>
           <ButtonWithTheme
             size="sm"
+            className="min-w-0"
             ref={buttonRef}
             onClick={handleButtonClick}
           >
